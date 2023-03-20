@@ -10,16 +10,48 @@ import {
   MenuItem,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Gear } from "phosphor-react";
+import { Gear, Link } from "phosphor-react";
 
 import AntSwitch from "../../components/AntSwitch";
 import { Nav_Buttons, Profile_Menu } from "../../data";
 import useSettings from "../../hooks/useSettings";
 import { faker } from "@faker-js/faker";
 import Logo from "../../assets/Images/logo.ico";
+import { useNavigate } from "react-router-dom";
+
+const getPath = (index) => {
+  switch (index) {
+    case 0:
+      return "/app";
+    case 1:
+      return "/group";
+    case 2:
+      return "/call";
+    case 3:
+      return "/settings";
+
+    default:
+      break;
+  }
+};
+
+const getMenuPath = (index) => {
+  switch (index) {
+    case 0:
+      return "/profile";
+    case 1:
+      return "/settings";
+    case 2:
+      //TODO => Update token & set isAuth = false
+      return "/auth/login";
+    default:
+      break;
+  }
+};
 
 const SideBar = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const [selected, setSelected] = useState(0);
   const { onToggleMode } = useSettings();
 
@@ -60,6 +92,7 @@ const SideBar = () => {
           >
             <img src={Logo} alt={"Chat App Logo"} />
           </Box>
+
           <Stack
             sx={{ width: "max-content" }}
             direction="column"
@@ -86,6 +119,7 @@ const SideBar = () => {
                 <IconButton
                   onClick={() => {
                     setSelected(el.index);
+                    navigate(getPath(el.index));
                   }}
                   sx={{
                     width: "max-content",
@@ -116,6 +150,7 @@ const SideBar = () => {
             ) : (
               <IconButton
                 onClick={() => {
+                  navigate(getPath(3));
                   setSelected(3);
                 }}
                 sx={{
@@ -166,9 +201,16 @@ const SideBar = () => {
             }}
           >
             <Stack spacing={1} px={1}>
-              {Profile_Menu.map((el) => (
-                <MenuItem onClick={handleClick}>
+              {Profile_Menu.map((el, idx) => (
+                <MenuItem
+                  onClick={() => {
+                    handleClick();
+                  }}
+                >
                   <Stack
+                    onClick={() => {
+                      navigate(getMenuPath(idx));
+                    }}
                     sx={{ width: 100 }}
                     direction="row"
                     alignItems={"center"}
